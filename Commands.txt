@@ -8,3 +8,5 @@ g++ -o <exe_name.exe> <file_name2.o> <file_name2.o> ... <file_nameN.o>
 
 To run the code, simply call exe by its name in terminal where ./ indicates cwd:
 ./exe_name.exe
+
+

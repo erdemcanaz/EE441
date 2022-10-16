@@ -67,5 +67,9 @@ if __name__ == "__main__":
     if("--r" in sys.argv or "--full" in sys.argv):
         os.system(f"./{EXE_NAME}")
 
+    #delete all object files and exe files
+    if("--full" in sys.argv and "--clean" in sys.argv):
+        delete_all_o_and_exe_files()
+
 
 
