@@ -1,0 +1,10 @@
+g++ --version
+
+To compile c++ source files into object files, use the -c option:
+g++ -c <file_name1.cpp> <file_name2.cpp> ... <file_nameN.cpp>
+
+To link and have an executable file, use the -o option:
+g++ -o <exe_name.exe> <file_name2.o> <file_name2.o> ... <file_nameN.o> 
+
+To run the code, simply call exe by its name in terminal where ./ indicates cwd:
+./exe_name.exe
