@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1664601949 source:d:\completed\uni\activelectures\ee441\2022-23\lectureprojects\chapter1_polymorphism\polygon.cpp
+
+1664603445 source:d:\completed\uni\activelectures\ee441\2022-23\lectureprojects\chapter1_polymorphism\main.cpp
+	"Polygon.hpp"
+
+1664602537 d:\completed\uni\activelectures\ee441\2022-23\lectureprojects\chapter1_polymorphism\polygon.hpp
+	<iostream>
+
