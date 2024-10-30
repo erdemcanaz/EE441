@@ -8,6 +8,15 @@ class Person{
         std::string last;
 
     public:
+        Person(std::string first, std::string last):first(first), last(last){
+            //Constructor should have the same name as the class
+        }
+        // Person(std::string first, std::string last){
+        //     this->first = first;
+        //     this->last = last;
+        // }
+        Person() = default;
+
         void setFirstName(std::string first_name){
            first = first_name;
         }
@@ -24,9 +33,9 @@ class Person{
 };
 
 int main(){
-    Person p;
-    p.setFirstName("Stephen");
-    p.setLastName("Curry");   
+    Person p("Stephen", "Curry");
+    //p.setFirstName("Stephen");
+    //p.setLastName("Curry");   
     p.printFullName();
 
     Person p2;
@@ -36,6 +45,6 @@ int main(){
 
     std::cout << p2.getName() << std::endl;
 
-    
+
     return 0;
 }
