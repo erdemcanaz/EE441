@@ -3,7 +3,7 @@
 
 class Person{
     //private by default
-    private:
+    protected:
         std::string first;
         std::string last;
 
@@ -19,11 +19,14 @@ class Person{
         void setLastName(std::string last){
             this->last = last;
         }
-        std::string getName(){
+        std::string getName() const{
             return first+ " " + last;
         }
         void printFullName(){
             std::cout << first << " " << last << std::endl;
+        }
+        virtual void printInfo() const {
+            std::cout << "name: " + getName() << std::endl;
         }
 
 };
@@ -42,9 +45,12 @@ class Employee : public Person{
         void setDepartment(std::string department){
             this->department = department;
         }
-        void printInfo(){
+        void printInfo() const override{
             std::cout << "name: "  + getName() << std::endl;
             std::cout << "department: "+ getDepartment() << std::endl;            
+        }
+        void printInfoProtected() const{
+            std::cout << first << " " << last << " " << department << std::endl;
         }
 };
 
@@ -56,6 +62,10 @@ int main(){
     std::cout << "----" << std::endl;
 
     e.printInfo();
+
+    std::cout << "----" << std::endl;
+
+    e.printInfoProtected();
 
 
     return 0;
