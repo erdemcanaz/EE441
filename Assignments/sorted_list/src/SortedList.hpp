@@ -1,5 +1,10 @@
+#include <stdexcept>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>    
 
-#define SORTEDLIST_MAX_SIZE 10000                                               // Maximum size of the list to ensure user does not set a very large size mistakenly
+#define SORTEDLIST_MAX_SIZE 70000                                              // Maximum size of the list to ensure user does not set a very large size mistakenly
 
 class SortedList {                                                              // ASCENDING ORDER FLOAT LIST 
     private:
@@ -15,6 +20,8 @@ class SortedList {                                                              
         float remove(size_t index);                                             // Remove the element at index and return it's value, raise out_of_range exception if index is out of range
         size_t find(float number);                                              // Find the index of the number in the list by binary search, raise domain_error if number is not found
 
+        size_t insert_binary_search(float number);                              // Insert the number in the list by binary search and return the index where it was inserted, raise length_error if list is full    
+        size_t get_list_size() const;                                           // Get the list_size
         void randomly_init_list(size_t modulo);                                 // Initialize the list with random numbers ranging from 0 to 99
         void randomly_init_list_with_new_size(size_t new_size, size_t modulo);  // Initialize the list with random numbers ranging from 0 to 99 and set the list_size to new_size
         void set_verbose(bool verbose);                                         // Set the verbose flag
