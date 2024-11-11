@@ -15,7 +15,7 @@ int main()
     std::cin.get();
 
     //Q2 - Two different constructors are implemented. ========================================
-    const size_t Q2_SECOND_LIST_SIZE = 10;
+    const size_t Q2_SECOND_LIST_SIZE = 10;  // (< SORTEDLIST_MAX_SIZE) By changing this value, you can change the list size of the second list
 
     std::cout << "\nQ2 - Two different constructors are implemented." << std::endl;
     SortedList list_by_default_constructor; // Default constructor: list_size = 0, verbose = false
@@ -27,9 +27,9 @@ int main()
     std::cin.get();
 
     //Q3 - Copy function is implemented. =======================================================  
-    const size_t Q3_MODULO_VALUE = 100;  
-    const size_t Q3_MAIN_LIST_SIZE = 0; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can test the copy function with different list sizes
-    const size_t Q3_SECOND_LIST_SIZE = 5; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can test the copy function with different list sizes
+    const size_t Q3_MODULO_VALUE = 100;    // Values in the list will be in the range of 0 to Q3_MODULO_VALUE-1 (float casted ints)
+    const size_t Q3_MAIN_LIST_SIZE = 0; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can set the list size of the main list
+    const size_t Q3_SECOND_LIST_SIZE = 5; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can set the list size of the second list
 
     std::cout << "\nQ3 - Copy function is implemented." << std::endl;
     std::cout << "# Main and Second SortedList objects are created with list_sizes " << Q3_MAIN_LIST_SIZE << " and " << Q3_SECOND_LIST_SIZE << std::endl;
@@ -54,9 +54,9 @@ int main()
     std::cin.get();
 
     //Q4 - index function is implemented. =====================================================
-    const size_t Q4_TEST_INDEXES_UPPER_BOUND = 20; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can test the index function with different indexes 
-    const size_t Q4_MODULO = 100; 
-    const size_t Q4_MAIN_LIST_SIZE = 10; // (< SORTEDLIST_MAX_SIZE) 
+    const size_t Q4_TEST_INDEXES_UPPER_BOUND = 20; // Indexes starting from 0 to Q4_TEST_INDEXES_UPPER_BOUND-1 will be tested
+    const size_t Q4_MODULO = 100;                  // Values in the list will be in the range of 0 to Q4_MODULO-1 (float casted ints)
+    const size_t Q4_MAIN_LIST_SIZE = 10;           // (< SORTEDLIST_MAX_SIZE) 
 
     std::cout << "\nQ4 - index function is implemented." << std::endl;
     std::cout << "# main list is randomly initialized with " << Q4_MAIN_LIST_SIZE << " number of elements" << std::endl;
@@ -79,8 +79,8 @@ int main()
     std::cin.get();
 
     //Q5 - insert function is implemented. ====================================================
-    const size_t Q5_MAIN_LIST_SIZE = 3; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can test the insert function with different list sizes
-    const size_t Q5_MODULO_VALUE = 100;
+    const size_t Q5_MAIN_LIST_SIZE = SORTEDLIST_MAX_SIZE-1; // (Set to SORTEDLIST_MAX_SIZE-1 to test length error) By changing this value, you can test the insert function with different list sizes
+    const size_t Q5_MODULO_VALUE = 100;                     // Values in the list will be in the range of 0 to Q5_MODULO-1 (float casted ints)
     const size_t Q5_INSERTED_ELEMENT = 50; // By changing this value, you can test the insert function with different inserted elements
 
     std::cout << "\nQ5 - insert function is implemented." << std::endl;
@@ -96,6 +96,21 @@ int main()
 
     std::cout << "Elements of the main list after insertion:" << std::endl;
     main_list.print_list();
+
+    std::cout << "Maximum size of the list is: " << SORTEDLIST_MAX_SIZE << std::endl;
+    std::cout << "Please note that the list size is increased by 1 after the insertion" << std::endl;
+    std::cout << "If the list size is equal to the maximum size, the insertion will not be possible" << std::endl;
+    std::cout << "Current list size is: " << main_list.get_list_size() << std::endl;
+
+    std::cout << "# Inserting element " << Q5_INSERTED_ELEMENT << " to the main list" << std::endl;  
+    try {
+        size_t insert_index = main_list.insert(Q5_INSERTED_ELEMENT);
+        std::cout << "Element " << Q5_INSERTED_ELEMENT << " is inserted to index " << insert_index << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+
 
     std::cout << "Press any key to continue..."<< std::endl;
     std::cin.get();
@@ -187,6 +202,14 @@ int main()
     std::cout << "Elements of the main list after removal:" << std::endl;
     main_list.print_list();
 
+    std::cout << "Removing element at index (SORTEDLIST_MAX_SIZE): " << SORTEDLIST_MAX_SIZE << " from the main list" << std::endl;
+    try {
+        float removed_element = main_list.remove(SORTEDLIST_MAX_SIZE);
+        std::cout << "Element " << removed_element << " is removed from index " << SORTEDLIST_MAX_SIZE << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
     std::cout << "Press any key to continue..."<< std::endl;
     std::cin.get();
 
@@ -251,12 +274,26 @@ int main()
     std::cout << "Element: " << Q9_FIND_ELEMENT << " is inserted" << std::endl;
     main_list.insert(Q9_FIND_ELEMENT);
 
-    std::cout << "Elements of the main list:" <<  main_list.get_list_size() << std::endl;
+    std::cout << "Element count of the main list:" <<  main_list.get_list_size() << std::endl;
 
     main_list.set_verbose(true);
     size_t find_index = main_list.find(Q9_FIND_ELEMENT);
     std::cout << "Element " << Q9_FIND_ELEMENT << " is found at index " << find_index << std::endl;
+
+    std::cout << "\nTrying to find an element that is not in the list" << std::endl;
+    std::cout << "Element (Modulo Value) " << Q9_MODULO_VALUE << " can not be in the list" << std::endl;
+
+    try {
+        find_index = main_list.find(Q9_MODULO_VALUE);
+        std::cout << "Element " << Q9_MODULO_VALUE << " is found at index " << find_index << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
     main_list.set_verbose(false);  
+
+    std::cout << "Press any key to continue..."<< std::endl;
+    std::cin.get();
 
     //Q10 - Time complexity of the find function =================================================
     //NOTE: to test this function, SORTEDLIST_MAX_SIZE should be greater than the maximum value of Q10_MAIN_LIST_SIZE
@@ -305,6 +342,23 @@ int main()
         }
         
     }
+
+    std::cout << "Press any key to continue..."<< std::endl;
+    std::cin.get();
+
+    //Q11 - print_list_Q11 function is implemented. ============================================
+    const size_t Q11_MAIN_LIST_SIZE = 10; // (< SORTEDLIST_MAX_SIZE) By changing this value, you can test the print_list_Q11 function with different list sizes
+    const size_t Q11_MODULO_VALUE = 100; // By changing this value, max value of the elements in the list can be changed
+
+    std::cout << "\nQ11 - print_list_Q11 function is implemented." << std::endl;
+    std::cout << "# main list is randomly initialized with " << Q11_MAIN_LIST_SIZE << " number of elements" << std::endl;
+    main_list.randomly_init_list_with_new_size(Q11_MAIN_LIST_SIZE, Q11_MODULO_VALUE);
+
+    std::cout << "List is printed in the format of Q11:" << std::endl;
+    main_list.print_list_Q11();
+
+    std::cout << "Press any key to continue..."<< std::endl;
+    std::cin.get();
 
     return 0;
 }

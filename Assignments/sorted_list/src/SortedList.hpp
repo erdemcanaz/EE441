@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctime>    
 
-#define SORTEDLIST_MAX_SIZE 70000                                              // Maximum size of the list to ensure user does not set a very large size mistakenly
+#define SORTEDLIST_MAX_SIZE 70000                                             // Maximum size of the list to ensure user does not set a very large size mistakenly
 
 class SortedList {                                                              // ASCENDING ORDER FLOAT LIST 
     private:
@@ -19,6 +19,7 @@ class SortedList {                                                              
         size_t insert(float number);                                            // Insert the number in the list and return the index where it was inserted, raise length_error if list is full
         float remove(size_t index);                                             // Remove the element at index and return it's value, raise out_of_range exception if index is out of range
         size_t find(float number);                                              // Find the index of the number in the list by binary search, raise domain_error if number is not found
+        void print_list_Q11() const;                                            // Print the list in the format of Q11
 
         size_t insert_binary_search(float number);                              // Insert the number in the list by binary search and return the index where it was inserted, raise length_error if list is full    
         size_t get_list_size() const;                                           // Get the list_size

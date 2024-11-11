@@ -97,9 +97,22 @@ size_t SortedList::find(float number){
         mid = (low + high) / 2; // integer division where floor is taken
         if (verbose) std::cout << "low: " << low << " mid: " << mid << " high: " << high  << "| mid_val: " << float_array[mid]  << std::endl;
 
-        if (float_array[mid] == number  || low+1 >= high){
-            if (verbose) std::cout << "Element found at index " << mid << std::endl;
-            return mid;
+        if (float_array[mid] == number || low+1 >= high ){
+            if (float_array[low] == number){
+                if (verbose) std::cout << "Element found at index " << low << std::endl;
+                return low;
+            }
+            else if (float_array[mid] == number){
+                if (verbose) std::cout << "Element found at index " << mid << std::endl;
+                return mid;
+            }
+            else if (float_array[high] == number){
+                if (verbose) std::cout << "Element found at index " << high << std::endl;
+                return high;
+            }else{
+                throw std::domain_error("Element not found");
+            }
+            
         }
         else if (float_array[mid] < number){
             low = mid;
@@ -107,12 +120,22 @@ size_t SortedList::find(float number){
         else{
             high = mid;
         }
+        
     }
 
     throw std::domain_error("Element not found");
 
 }
 
+void SortedList::print_list_Q11() const{
+    if (list_size == 0){
+        std::cout << "\tThe list is empty" << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < list_size; i++){
+        std::cout << float_array[i] << " ";
+    }
+}
 // Functions codded by me ========================================
 size_t SortedList::get_list_size() const{
     return list_size;
