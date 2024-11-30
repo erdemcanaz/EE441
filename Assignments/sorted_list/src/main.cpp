@@ -87,15 +87,26 @@ int main()
     std::cout << "# main list is randomly initialized with " << Q5_MAIN_LIST_SIZE << " number of elements" << std::endl;
     main_list.randomly_init_list_with_new_size(Q5_MAIN_LIST_SIZE, Q5_MODULO_VALUE);
     
-    std::cout << "Elements of the main list:" << std::endl;
-    main_list.print_list();
+    if (Q5_MAIN_LIST_SIZE < 50){
+        std::cout << "Elements of the main list:" << std::endl;
+        main_list.print_list();
+    }
+    else{
+        std::cout << "Elements of the main list are not printed since the list size is greater than 50" << std::endl;
+    }
+
 
     std::cout << "# Inserting element " << Q5_INSERTED_ELEMENT << " to the main list" << std::endl;  
     size_t insert_index = main_list.insert(Q5_INSERTED_ELEMENT);
     std::cout << "Element " << Q5_INSERTED_ELEMENT << " is inserted to index " << insert_index << std::endl;
 
-    std::cout << "Elements of the main list after insertion:" << std::endl;
-    main_list.print_list();
+    if (Q5_MAIN_LIST_SIZE < 50){
+        std::cout << "Elements of the main list after insertion:" << std::endl;
+        main_list.print_list();
+    }
+    else{
+        std::cout << "Elements of the main list are not printed since the list size is greater than 50" << std::endl;
+    }
 
     std::cout << "Maximum size of the list is: " << SORTEDLIST_MAX_SIZE << std::endl;
     std::cout << "Please note that the list size is increased by 1 after the insertion" << std::endl;
@@ -299,7 +310,7 @@ int main()
     //NOTE: to test this function, SORTEDLIST_MAX_SIZE should be greater than the maximum value of Q10_MAIN_LIST_SIZE
 
     const size_t Q10_MAIN_LIST_SIZE[] = {256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};; //NOTE: Never edit this array
-    const size_t Q10_NUMBER_OF_TRIALS = 10000; // Please ensure that this value is comparable to maximum value of Q10_MAIN_LIST_SIZE
+    const size_t Q10_NUMBER_OF_TRIALS = 3000000; // Please ensure that this value is comparable to maximum value of Q10_MAIN_LIST_SIZE
 
     main_list_sizes_count = sizeof(Q10_MAIN_LIST_SIZE)/sizeof(Q10_MAIN_LIST_SIZE[0]);
     size_t Q10_MODULO_VALUE = Q10_MAIN_LIST_SIZE[main_list_sizes_count-1];

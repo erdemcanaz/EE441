@@ -86,7 +86,6 @@ float SortedList::remove(size_t index){
 }
 
 size_t SortedList::find(float number){
-    // Only 
     if (verbose) std::cout << "Finding element " << number << std::endl;
 
     //find by binary search

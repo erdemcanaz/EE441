@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctime>    
 
-#define SORTEDLIST_MAX_SIZE 70000                                             // Maximum size of the list to ensure user does not set a very large size mistakenly
+#define SORTEDLIST_MAX_SIZE 70000 //I have used 70000 during my testings        // Maximum size of the list to ensure user does not set a very large size mistakenly
 
 class SortedList {                                                              // ASCENDING ORDER FLOAT LIST 
     private:
