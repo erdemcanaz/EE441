@@ -44,6 +44,7 @@ private:
             m_tiles[i] = m_tiles[i + 1];
         };
 
+        m_handSize--; // Decrement the hand size
         return popped_tile;
     };
 
@@ -87,7 +88,48 @@ public:
 
     Tile *discard_tile(void)
     {
-        throw std::logic_error("Function \"discard_tile\" is not implemented!");
+        // The hand is ordered. To better readbility, considering the computational expense is fairly low, we can use brute force to find the tile to discard.
+
+        // I: Look for quadruplets in the hand. If a quadruplet exists the function will discard one of the tiles from the quadruplet.
+        for (size_t i = 0; i < m_handSize - 3; i++)
+        {
+            if (*m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] == *m_tiles[i + 2] && *m_tiles[i] == *m_tiles[i + 3])
+            {
+                return pop(i);
+            }
+        }
+        // II: Look for single tiles in the hand, which are tiles with no duplicates in your hand. If a single tile exists the function will discard it.
+        for (size_t i = 0; i < m_handSize; i++)
+        {
+            if (i == 0 && *m_tiles[i] != *m_tiles[i + 1])
+            {
+                return pop(i);
+            }
+            else if (i == m_handSize - 1 && *m_tiles[i] != *m_tiles[i - 1])
+            {
+                return pop(i);
+            }
+            else if (*m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 1])
+            {
+                return pop(i);
+            }
+        }
+        // Look for pairs in the hand. If the previous two steps did not find anything the hand will have at least 3 pairs and the function will discard a tile from one of them.
+        for (size_t i = 0; i < m_handSize - 1; i++)
+        {
+            if (i == 0 && *m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i + 2])
+            {
+                return pop(i);
+            }
+            else if (i == m_handSize - 2 && *m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i - 1])
+            {
+                return pop(i);
+            }
+            else if (*m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 2])
+            {
+                return pop(i);
+            }
+        }
     };
 
     bool check_win_condition() const
@@ -115,6 +157,11 @@ void __test_hand_class()
     Tile tile_2('C', 2);
     Tile tile_3('C', 3);
     Tile tile_4('B', 9);
+    Tile tile_5('B', 5);
+    Tile tile_6('B', 5);
+    Tile tile_7('B', 5);
+    Tile tile_8('B', 5);
+    Tile tile_9('C', 2);
 
     // Create a Hand of Tile objects
     Hand hand;
@@ -136,5 +183,46 @@ void __test_hand_class()
 
     hand.add_tile(&tile_4);
     std::cout << "\nAdded Tile 4 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_5);
+    std::cout << "\nAdded Tile 5 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_6);
+    std::cout << "\nAdded Tile 6 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_7);
+    std::cout << "\nAdded Tile 7 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_8);
+    std::cout << "\nAdded Tile 8 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_9);
+    std::cout << "\nAdded Tile 9 to the hand." << std::endl;
+    hand.display_hand();
+
+    // Discard Tile objects from the hand
+    Tile *discarded_tile = hand.discard_tile();
+    std::cout << "\nDiscarded Tile: " << *discarded_tile << std::endl;
+    hand.display_hand();
+
+    Tile *discarded_tile2 = hand.discard_tile();
+    std::cout << "\nDiscarded Tile: " << *discarded_tile2 << std::endl;
+    hand.display_hand();
+
+    Tile *discarded_tile3 = hand.discard_tile();
+    std::cout << "\nDiscarded Tile: " << *discarded_tile3 << std::endl;
+    hand.display_hand();
+
+    Tile *discarded_tile4 = hand.discard_tile();
+    std::cout << "\nDiscarded Tile: " << *discarded_tile4 << std::endl;
+    hand.display_hand();
+
+    Tile *discarded_tile5 = hand.discard_tile();
+    std::cout << "\nDiscarded Tile: " << *discarded_tile5 << std::endl;
     hand.display_hand();
 }
