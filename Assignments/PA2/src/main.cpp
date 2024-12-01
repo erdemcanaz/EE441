@@ -14,8 +14,7 @@ int main()
 {
     __test_tile_class();
     __test_stack_class();
-
-   
+    __test_hand_class();
     // pile_test();
     // hand_test();
 

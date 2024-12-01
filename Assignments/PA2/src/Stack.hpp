@@ -28,8 +28,8 @@ public:
     // Destructor
     ~Stack()
     {
-        // Deallocate memory for m_data since it is manually allocated
-        delete[] m_data;
+        delete[] m_data;  //  deallocate memory for m_data
+        m_data = nullptr; // set m_data to nullptr to avoid dangling pointers
     }
 
     bool is_empty() const
@@ -123,9 +123,9 @@ void __test_stack_class()
     std::cout << "\n\n--- Stack Class Tests ---" << std::endl;
 
     // Create Tile objects
-    Tile tile_1('D', 1);
-    Tile tile_2('E', 2);
-    Tile tile_3('F', 3);
+    Tile tile_1('B', 1);
+    Tile tile_2('C', 2);
+    Tile tile_3('D', 3);
 
     // Create a Stack of Tile objects
     Stack<Tile> tile_stack;
@@ -153,8 +153,8 @@ void __test_stack_class()
     std::cout << "After reserving capacity of 5: " << tile_stack << std::endl;
 
     // Push more Tile objects
-    Tile tile_4('G', 4);
-    Tile tile_5('H', 5);
+    Tile tile_4('B', 4);
+    Tile tile_5('C', 2);
     tile_stack.push_back(tile_4);
     tile_stack.push_back(tile_5);
     std::cout << "After pushing tile_4, tile_5: " << tile_stack << std::endl;

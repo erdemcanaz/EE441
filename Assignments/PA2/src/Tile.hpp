@@ -27,9 +27,19 @@ public:
              };
 
     // Parameterized constructor
-    Tile(char s, int n) : m_suit(s), m_number(n) {
-                              // Assign values to the member variables
-                          };
+    Tile(char s, int n) : m_suit(s), m_number(n)
+    {
+        // Assign values to the member variables
+        if (m_suit != 'B' && m_suit != 'C' && m_suit != 'D')
+        {
+            throw std::domain_error("Invalid suit: The suit must be B, C, or D.");
+        }
+
+        if (m_number < 1 || m_number > 9)
+        {
+            throw std::domain_error("Invalid number: The number must be between 1 and 9.");
+        }
+    };
 
     // Comparison operator for equality
     bool operator==(const Tile &other) const

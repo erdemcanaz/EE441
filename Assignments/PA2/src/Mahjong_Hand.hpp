@@ -3,46 +3,130 @@
 #include "Tile.hpp"
 
 #define MAX_HAND_SIZE 14
-class Hand {
+class Hand
+{
 private:
-    Tile* m_tiles[MAX_HAND_SIZE];        // Array of pointers to Tile objects
-    size_t m_handSize;       // Current hand size
+    Tile *m_tiles[MAX_HAND_SIZE]; // default:  Array of pointers to Tile objects
+    size_t m_handSize;            // Current hand size
 
-    void insert_before(size_t index, Tile* new_tile) {
-        throw std::logic_error("Function \"insert_before\" is not implemented!");
+    void insert_before(size_t index, Tile *new_tile)
+    {
+        //  This function adds a new Tile to the tiles before the given index. This function throws std::out_of_range error if the m_handSize exceeds MAX_HAND_SIZE macro with the insertion
+        if (m_handSize >= MAX_HAND_SIZE)
+        {
+            throw std::out_of_range("Invalid operation: Cannot insert into a full hand.");
+        };
+
+        // Shift the elements to the right starting from the index
+        for (size_t i = m_handSize; i > index; --i)
+        {
+            m_tiles[i] = m_tiles[i - 1];
+        };
+
+        // Insert the new_tile at the index
+        m_tiles[index] = new_tile;
+        m_handSize++;
     };
 
-    Tile * pop(size_t index) {
+    Tile *pop(size_t index)
+    {
         throw std::logic_error("Function \"pop\" is not implemented!");
     };
+
 public:
     // Constructors and Destructor
-    Hand() {
-        throw std::logic_error("Function \"default constructor\" is not implemented!");
-    };
-    ~Hand() {
-        throw std::logic_error("Function \"destructor\" is not implemented!");
+    Hand() : m_handSize(0) {
+                 // Initialize the hand size with a default value (e.g., 0)
+             };
+    ~Hand()
+    {
+        for (size_t i = 0; i < m_handSize; ++i)
+        {
+            delete m_tiles[i];    // Free the heap pointed by the pointer
+            m_tiles[i] = nullptr; // Set the pointer to nullptr to avoid dangling pointers
+        }
     };
 
     // Member Functions
-    void clear() {
-        throw std::logic_error("Function \"clear\" is not implemented!");;
+    void clear()
+    {
+        throw std::logic_error("Function \"clear\" is not implemented!");
+        ;
     };
 
-    void add_tile(Tile* tile) {
-        throw std::logic_error("Function \"add_tile\" is not implemented!");     
+    void add_tile(Tile *tile)
+    {
+        // This function adds a new tile into the hand such that the tiles held are ordered after the insertion.
+
+        // Tile *m_tiles[MAX_HAND_SIZE]; // default:  Array of pointers to Tile objects
+        // size_t m_handSize;            // Current hand size
+
+        // Find the index to insert the new tile.
+
+        size_t index_to_insert = m_handSize;
+        for (size_t i = 0; i < m_handSize; i++)
+        {
+            bool is_tile_less = *tile < *m_tiles[i];
+            if (*tile < *m_tiles[i])
+            {
+                index_to_insert = i;
+                break;
+            }
+        }
+
+        insert_before(index_to_insert, tile);
     };
 
-    Tile* discard_tile(void) {
+    Tile *discard_tile(void)
+    {
         throw std::logic_error("Function \"discard_tile\" is not implemented!");
     };
 
-    bool check_win_condition() const {
+    bool check_win_condition() const
+    {
         throw std::logic_error("Function \"check_win_condition\" is not implemented!");
     };
 
     // Display Function
-    void display_hand() const {
-        throw std::logic_error("Function \"display_hand\" is not implemented!");    
+    void display_hand() const
+    {
+        for (size_t i = 0; i < m_handSize; i++)
+        {
+            std::cout << *m_tiles[i] << ' ';
+        }
     };
 };
+
+void __test_hand_class()
+{
+    std::cout << "\n\n--- Hand Class Tests ---" << std::endl;
+
+    // Create Tile objects
+
+    Tile tile_1('B', 1);
+    Tile tile_2('C', 2);
+    Tile tile_3('C', 3);
+    Tile tile_4('B', 9);
+
+    // Create a Hand of Tile objects
+    Hand hand;
+    std::cout << "Created an empty Hand. (Default)" << std::endl;
+    hand.display_hand();
+
+    // Add Tile objects to the hand
+    hand.add_tile(&tile_1);
+    std::cout << "\nAdded Tile 1 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_2);
+    std::cout << "\nAdded Tile 2 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_3);
+    std::cout << "\nAdded Tile 3 to the hand." << std::endl;
+    hand.display_hand();
+
+    hand.add_tile(&tile_4);
+    std::cout << "\nAdded Tile 4 to the hand." << std::endl;
+    hand.display_hand();
+}
