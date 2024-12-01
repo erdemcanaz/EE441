@@ -34,12 +34,6 @@ public:
 
     bool is_empty() const
     {
-        //(OPTIONAL) Check if memory is allocated for the stack, if not throw an error
-        // if (m_data == nullptr)
-        // {
-        //     throw std::logic_error("Invalid stack: One cannot check if an uninitialized stack is empty.");
-        // };
-
         // Check if the stack is empty
         return m_size == 0;
     }
