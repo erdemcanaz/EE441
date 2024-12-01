@@ -43,6 +43,8 @@ private:
         {
             m_tiles[i] = m_tiles[i + 1];
         };
+
+        return popped_tile;
     };
 
 public:
@@ -74,7 +76,6 @@ public:
         size_t index_to_insert = m_handSize;
         for (size_t i = 0; i < m_handSize; i++)
         {
-            bool is_tile_less = *tile < *m_tiles[i];
             if (*tile < *m_tiles[i])
             {
                 index_to_insert = i;
