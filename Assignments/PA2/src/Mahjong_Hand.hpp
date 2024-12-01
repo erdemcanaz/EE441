@@ -146,7 +146,60 @@ public:
 
     bool check_win_condition() const
     {
-        throw std::logic_error("Function \"check_win_condition\" is not implemented!");
+        // Implement the check_win_condition function.This function will return true if the hand has 4 triplets and a pair indicating a game win.
+        size_t keys[MAX_HAND_SIZE];   // key mapping is -> (suit - 'B') * 10 + number
+        size_t counts[MAX_HAND_SIZE]; // counts of each tile exist in the hand
+        size_t unique_tile_count = 0; // how many unique tiles exist in the hand
+
+        for (size_t i = 0; i < MAX_HAND_SIZE; i++)
+        {
+            keys[i] = 0;
+            counts[i] = 0;
+        }
+
+        // calculate the counts of each tile type incrementally
+        for (size_t i = 0; i < m_handSize; i++)
+        {
+            size_t key = (m_tiles[i]->m_suit - 'B') * 10 + (m_tiles[i]->m_number);
+
+            size_t key_index = unique_tile_count;
+            for (size_t j = 0; j < unique_tile_count; j++)
+            {
+                if (keys[j] == key)
+                {
+                    key_index = j;
+                    break;
+                }
+            }
+            if (key_index == unique_tile_count)
+            {
+                unique_tile_count++;
+                keys[key_index] = key;
+            }
+            counts[key_index]++;
+        }
+
+        // check the number of group types
+        size_t pair_count = 0;
+        size_t triplet_count = 0;
+
+        for (size_t i = 0; i < unique_tile_count; i++)
+        {
+            if (counts[i] == 2)
+            {
+                pair_count++;
+            }
+            else if (counts[i] == 3)
+            {
+                triplet_count++;
+            }
+        }
+
+        if (triplet_count == 4 && pair_count == 1)
+        {
+            return true;
+        }
+        return false;
     };
 
     // Display Function
@@ -217,6 +270,8 @@ void __test_hand_class()
     std::cout << "\nAdded Tile 9 to the hand." << std::endl;
     hand.display_hand();
 
+    hand.check_win_condition();
+
     // Discard Tile objects from the hand
     Tile *discarded_tile = hand.discard_tile();
     std::cout << "\nDiscarded Tile: " << *discarded_tile << std::endl;
@@ -237,4 +292,6 @@ void __test_hand_class()
     Tile *discarded_tile5 = hand.discard_tile();
     std::cout << "\nDiscarded Tile: " << *discarded_tile5 << std::endl;
     hand.display_hand();
+
+    hand.check_win_condition();
 }
