@@ -11,7 +11,7 @@ private:
 
     void insert_before(size_t index, Tile *new_tile)
     {
-        //  This function adds a new Tile to the tiles before the given index. This function throws std::out_of_range error if the m_handSize exceeds MAX_HAND_SIZE macro with the insertion
+        //  This function adds a new Tile to the tiles before the given index. This function throws std::out_of_range error if the m_handSize exceeds MAX_HAND_SIZE macro with the insertion. Example: Hand: B1,B2,B4,C2,C5, nullptr, … -> insert_before (3, C1) -> B1,B2,B4,C1,C2,C5, nullptr, …
         if (m_handSize >= MAX_HAND_SIZE)
         {
             throw std::out_of_range("Invalid operation: Cannot insert into a full hand.");
@@ -30,7 +30,19 @@ private:
 
     Tile *pop(size_t index)
     {
-        throw std::logic_error("Function \"pop\" is not implemented!");
+        // This function pops the Tile pointer with a given index from the m_tiles array. Hand: B1 B2 B4 C1 C2 C5 nullptr … -> pop (3, C1) -> B1 B2 B4 C2 C5 nullptr …
+        if (index >= m_handSize)
+        {
+            throw std::out_of_range("Invalid operation: Cannot pop the tile at the given index since it exceeds the hand size.");
+        };
+
+        Tile *popped_tile = m_tiles[index]; // Get the pointer to the tile to be popped
+
+        // Shift the elements to the left starting from the index
+        for (size_t i = index; i < m_handSize - 1; ++i)
+        {
+            m_tiles[i] = m_tiles[i + 1];
+        };
     };
 
 public:
@@ -56,13 +68,9 @@ public:
 
     void add_tile(Tile *tile)
     {
-        // This function adds a new tile into the hand such that the tiles held are ordered after the insertion.
+        // This function adds a new tile into the hand such that the tiles held are ordered after the insertion
 
-        // Tile *m_tiles[MAX_HAND_SIZE]; // default:  Array of pointers to Tile objects
-        // size_t m_handSize;            // Current hand size
-
-        // Find the index to insert the new tile.
-
+        // Find the index to insert the new tile. Assume the tiles are sorted in ascending order (e.g., B1, B2, B4, C2, C5, …)
         size_t index_to_insert = m_handSize;
         for (size_t i = 0; i < m_handSize; i++)
         {
@@ -73,7 +81,6 @@ public:
                 break;
             }
         }
-
         insert_before(index_to_insert, tile);
     };
 
