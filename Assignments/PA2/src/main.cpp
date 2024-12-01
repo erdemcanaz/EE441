@@ -10,14 +10,22 @@
 
 #define NUMBER_OF_TURNS 3
 
-int main() {
-    //pile_test();
-    //hand_test();
+int main()
+{
+    __test_tile_class();
+    __test_stack_class();
+
+   
+    // pile_test();
+    // hand_test();
+
+    return 0;
 
     Stack<Tile> wall;
     Hand my_hand;
 
-    for (int turn = 0; turn < NUMBER_OF_TURNS; turn++) {
+    for (int turn = 0; turn < NUMBER_OF_TURNS; turn++)
+    {
         std::cout << "******************* GAME " << turn << " ***********************";
         std::cin.get();
         int turn_count = 0;
@@ -25,13 +33,15 @@ int main() {
 
         // Print the stack of parsed tiles
         std::cout << "Parsed Tiles: " << wall << std::endl;
-        Tile* temp_tile;
-        for (int i = 0; i < 14; i++) {
+        Tile *temp_tile;
+        for (int i = 0; i < 14; i++)
+        {
             temp_tile = new Tile(wall.pop_back());
             my_hand.add_tile(temp_tile);
         }
 
-        while (!my_hand.check_win_condition() && !wall.is_empty()) {
+        while (!my_hand.check_win_condition() && !wall.is_empty())
+        {
             turn_count++;
             std::cout << "Turn " << turn_count << "\n";
             my_hand.display_hand();
@@ -40,13 +50,11 @@ int main() {
             delete temp_tile;
             temp_tile = new Tile(wall.pop_back());
             my_hand.add_tile(temp_tile);
-
         }
         my_hand.display_hand();
         std::cout << "I won in turn " << turn_count << "!!!!! \n";
         wall.clear();
         my_hand.clear();
-
     }
     return 0;
 }
