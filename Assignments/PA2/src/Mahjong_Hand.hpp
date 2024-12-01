@@ -90,46 +90,58 @@ public:
     {
         // The hand is ordered. To better readbility, considering the computational expense is fairly low, we can use brute force to find the tile to discard.
 
-        // I: Look for quadruplets in the hand. If a quadruplet exists the function will discard one of the tiles from the quadruplet.
-        for (size_t i = 0; i < m_handSize - 3; i++)
+        // (I) Look for quadruplets in the hand. If a quadruplet exists the function will discard one of the tiles from the quadruplet.
+        for (size_t i = 0; i < m_handSize; i++)
         {
-            if (*m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] == *m_tiles[i + 2] && *m_tiles[i] == *m_tiles[i + 3])
+            if (((i + 3 < m_handSize) && (*m_tiles[i] == *m_tiles[i + 1]) && (*m_tiles[i] == *m_tiles[i + 2]) && (*m_tiles[i] == *m_tiles[i + 3])))
             {
+                // Quadruplet starting at index i
                 return pop(i);
             }
         }
-        // II: Look for single tiles in the hand, which are tiles with no duplicates in your hand. If a single tile exists the function will discard it.
+
+        // (II)  | Look for single tiles in the hand, which are tiles with no duplicates in your hand. If a single tile exists the function will discard it.
         for (size_t i = 0; i < m_handSize; i++)
         {
+
             if (i == 0 && *m_tiles[i] != *m_tiles[i + 1])
             {
+                // first tile
                 return pop(i);
             }
             else if (i == m_handSize - 1 && *m_tiles[i] != *m_tiles[i - 1])
             {
+                // last tile
                 return pop(i);
             }
             else if (*m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 1])
             {
+                // in between
                 return pop(i);
             }
         }
-        // Look for pairs in the hand. If the previous two steps did not find anything the hand will have at least 3 pairs and the function will discard a tile from one of them.
-        for (size_t i = 0; i < m_handSize - 1; i++)
+        // (III) | Look for pairs in the hand. If the previous two steps did not find anything the hand will have at least 3 pairs and the function will discard a tile from one of them.
+        for (size_t i = 0; i < m_handSize; i++)
         {
-            if (i == 0 && *m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i + 2])
+            if ((i + 1 < m_handSize) && *m_tiles[i] == *m_tiles[i + 1])
             {
-                return pop(i);
-            }
-            else if (i == m_handSize - 2 && *m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i - 1])
-            {
-                return pop(i);
-            }
-            else if (*m_tiles[i] == *m_tiles[i + 1] && *m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 2])
-            {
-                return pop(i);
+                // Check if not part of a triplet
+                bool is_triplet = false;
+
+                if ((i > 0) && *m_tiles[i] == *m_tiles[i - 1])
+                    is_triplet = true;
+                if ((i + 2 < m_handSize) && *m_tiles[i] == *m_tiles[i + 2])
+                    is_triplet = true;
+
+                if (!is_triplet)
+                {
+                    // Found a pair not part of a triplet, discard one tile
+                    return pop(i);
+                }
             }
         }
+
+        throw std::logic_error("No tile is discarded!");
     };
 
     bool check_win_condition() const
