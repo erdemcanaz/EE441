@@ -1,3 +1,4 @@
 *.o
 *.exe
 *.zip
+*random_fourier_series
