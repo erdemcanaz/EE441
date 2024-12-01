@@ -65,8 +65,12 @@ public:
     // Member Functions
     void clear()
     {
-        throw std::logic_error("Function \"clear\" is not implemented!");
-        ;
+        for (size_t i = 0; i < m_handSize; ++i)
+        {
+            delete m_tiles[i];    // Free the heap pointed by the pointer
+            m_tiles[i] = nullptr; // Set the pointer to nullptr to avoid dangling pointers
+        }
+        m_handSize = 0;
     };
 
     void add_tile(Tile *tile)
@@ -114,7 +118,7 @@ public:
                 // last tile
                 return pop(i);
             }
-            else if (*m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 1])
+            else if (i != 0 && i!= m_handSize &&*m_tiles[i] != *m_tiles[i - 1] && *m_tiles[i] != *m_tiles[i + 1])
             {
                 // in between
                 return pop(i);
@@ -140,8 +144,6 @@ public:
                 }
             }
         }
-
-        throw std::logic_error("No tile is discarded!");
     };
 
     bool check_win_condition() const

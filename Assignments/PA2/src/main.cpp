@@ -9,16 +9,17 @@
 #include <algorithm>
 
 #define NUMBER_OF_TURNS 3
-
+#define IS_TESTING 0 // 0: Run the game, 1: Run the tests
 int main()
 {
-    __test_tile_class();
-    __test_stack_class();
-    __test_hand_class();
-    // pile_test();
-    // hand_test();
 
-    return 0;
+    if (IS_TESTING)
+    {
+        __test_tile_class();
+        __test_stack_class();
+        __test_hand_class();
+        return 0;
+    }
 
     Stack<Tile> wall;
     Hand my_hand;
@@ -45,6 +46,7 @@ int main()
             std::cout << "Turn " << turn_count << "\n";
             my_hand.display_hand();
             temp_tile = my_hand.discard_tile();
+
             std::cout << *temp_tile << "\n";
             delete temp_tile;
             temp_tile = new Tile(wall.pop_back());
