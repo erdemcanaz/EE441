@@ -35,23 +35,30 @@ public:
 int main()
 {
 
-    Time myTime(0, 50);
-    myTime.DisplayTime();
-    myTime.IncrementMinutes();
-    myTime.DisplayTime();
+    // Time myTime(0, 50);
+    // myTime.DisplayTime();
+    // myTime.IncrementMinutes();
+    // myTime.DisplayTime();
 
-    Time newTime(myTime);
-    myTime.DecrementMinutes();
-    newTime.DisplayTime();
-    myTime.DisplayTime();
+    // Time newTime(myTime);
+    // myTime.DecrementMinutes();
+    // newTime.DisplayTime();
+    // myTime.DisplayTime();
 
-    TimeZone erdem = TimeZone(19, 56, 3);
+    int erdem_clock;
+    std::cout << "Erdem hour:";
+    std::cin >> erdem_clock;
+
+    std::cout << "Erdem -> ";
+    TimeZone erdem = TimeZone(erdem_clock, 0, 3);
     erdem.DisplayTimeZone();
 
+    std::cout << "Tuna  -> ";
     TimeZone tuna(erdem);
     tuna.setTimeZone(0);
     tuna.DisplayTimeZone();
 
+    std::cout << "Humo  -> ";
     TimeZone humo(erdem);
     humo.setTimeZone(1);
     humo.DisplayTimeZone();
