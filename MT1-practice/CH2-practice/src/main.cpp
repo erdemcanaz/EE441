@@ -15,7 +15,7 @@ void swap_integers_by_reference(int &v1, int &v2)
     v2 = dummy;
 }
 
-int main()
+void basic_examples()
 {
     // Array examples
     char C[5];
@@ -53,6 +53,73 @@ int main()
     swap_integers_by_reference(integer_1, integer_2);
     std::cout << "Integer 1: " << integer_1 << " Integer 2: " << integer_2 << std::endl;
     swap_integers_by_reference(integer_1, integer_2);
+}
+
+void Fun(int *a, int *b)
+{
+    // a[3]=3, b[5] = 105
+    a = a + 5;
+    // a[8]=8, b[5] = 105
+    b = a - 2;
+    // a[8]=8, b[5] = 105
+};
+
+void Fun_by_address(int **a, int **b)
+{
+    *a = *a - 3;
+    *b = *b - 5;
+};
+
+void Fun_by_reference(int *&a, int *&b)
+{
+    a = a - 3;
+    b = b - 5;
+};
+
+int main()
+{
+    // basic_examples();
+
+    //_______________________________________________
+    int a[50], b[50];
+
+    for (int i = 0; i < 50; i++)
+    {
+        a[i] = i;
+        b[i] = 100 + i;
+    }
+    int *p, *q;
+    p = a + 3; // a[3] = 3;
+    q = b + 5; // b[5] = 105
+    Fun(p, q); // Line (X)
+
+    Fun_by_reference(p, q);
+    std::cout << "\n*p: " << *p << " *q: " << *q << std::endl;
+    p = a + 3;
+    q = b + 5;
+    std::cout << "\n*p: " << *p << " *q: " << *q << std::endl;
+
+    Fun_by_address(&p, &q);
+    std::cout << "\n*p: " << *p << " *q: " << *q << std::endl;
+
+    //_______________________________________________
+    // What will be the output of the following piece of code? When contents of a memory location are not known,  indicate this.
+    int i, j, M[3][4];
+    int temp;
+    for (i = 2; i >= 0; i = i - 1)
+    {
+        for (j = 3; j >= 0; j = j - 1)
+        {
+            if (i == j)
+                M[i][j] = 10;
+            else
+                M[i][j] = i * j;
+            std::cout << i << "," << j << ":" << M[i][j] << ";";
+        }
+        std::cout << std::endl;
+    }
+    temp = *(*(M + 2) + 3); // i.e fourth element of the third row
+    std::cout << M[0][0] << " and " << temp << std::endl;
 
     return 0;
 }
