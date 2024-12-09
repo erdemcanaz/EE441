@@ -22,27 +22,8 @@ public:
     };
     void displayNode() const;
     void printAddress() const;
-
-    void insertAfter(Node<T> &inserted_node)
-    {
-        if (inserted_node.m_previous != nullptr || inserted_node.m_next != nullptr)
-        {
-            throw std::logic_error("Inserted Node should not be connected to any list");
-        }
-        Node<T> *temp_next = m_next;
-        // Update current node
-        m_next = &inserted_node;
-
-        // Update older next_node if exists
-        if (temp_next != nullptr)
-        {
-            (*temp_next).m_previous = &inserted_node;
-        }
-
-        // Update inserted node
-        inserted_node.m_previous = this;
-        inserted_node.m_next = temp_next;
-    }
+    void insertAfter(Node<T> &insert_node);
+    Node<T> *deleteAfter();
 };
 
 template <class T>
@@ -63,6 +44,51 @@ void Node<T>::printAddress() const
     std::cout << "Address of the node: " << this << std::endl;
 }
 
+template <class T>
+void Node<T>::insertAfter(Node<T> &inserted_node)
+{
+    if (inserted_node.m_previous != nullptr || inserted_node.m_next != nullptr)
+    {
+        throw std::logic_error("Inserted Node should not be connected to any list");
+    }
+    Node<T> *temp_next = m_next;
+    // Update current node
+    m_next = &inserted_node;
+
+    // Update older next_node if exists
+    if (temp_next != nullptr)
+    {
+        (*temp_next).m_previous = &inserted_node;
+    }
+
+    // Update inserted node
+    inserted_node.m_previous = this;
+    inserted_node.m_next = temp_next;
+}
+
+template <class T>
+Node<T> *Node<T>::deleteAfter()
+{
+    // check if next exists
+    if (m_next == nullptr)
+    {
+        return nullptr;
+    }
+
+    Node<T> *temp_next = m_next;
+    Node<T> *temp_next_next = m_next->m_next;
+
+    // 2 next
+    m_next = temp_next_next;
+    if (temp_next_next != nullptr)
+    {
+        temp_next_next->m_previous = this;
+    }
+
+    temp_next->m_next = nullptr;
+    temp_next->m_previous = nullptr;
+}
+
 void test_code_1()
 {
     Node<char> *node_1, *node_2, *node_3;
@@ -72,6 +98,8 @@ void test_code_1()
 
     node_1->insertAfter(*node_2);
     node_1->insertAfter(*node_3);
+
+    node_3->deleteAfter();
 
     node_1->displayNode();
     node_2->displayNode();
