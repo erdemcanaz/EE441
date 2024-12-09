@@ -47,6 +47,7 @@ void simple_test_2()
             // Overriding equality operator. Called when already initiliazed object is overwritten by other object
             std::cout << "Equality override is called" << std::endl;
             mId = other_person.mId;
+            return *this;
         }
         void setId(int id)
         {
@@ -60,7 +61,7 @@ void simple_test_2()
     };
 
     double *p = new double(5.3);
-
+    std::cout << *p << std::endl;
 
     const int NUMBER_OF_PERSONS = 20;
     Person *persons = new Person[NUMBER_OF_PERSONS];
@@ -74,8 +75,87 @@ void simple_test_2()
     delete[] persons;
 }
 
+template <class T>
+class DynamicClass
+{
+private:
+    T m1;
+    T *m2; // dangling
+
+public:
+    DynamicClass(const T &member_1, const T &member_2);           // Constructor       -> to initilize with parameters
+    DynamicClass(const DynamicClass<T> &item);                    // Copy constructor  -> Initilize object with another object of the same class
+    DynamicClass<T> &operator=(const DynamicClass<T> &other_item) // Operator override -> Both objects are already existing. Copy values of other class to this one.
+    {
+        std::cout << "Equality override " << m1 << "/" << *m2 << std::endl;
+
+        m1 = other_item.m1;
+        *m2 = *other_item.m2;
+        return *this;
+    };
+    ~DynamicClass(); // Deconstructor     -> to deallocate memory
+    DynamicClass<T> *getObjectPointer() const;
+    void displayClass() const;
+};
+
+template <class T>
+DynamicClass<T>::DynamicClass(const T &member_1, const T &member_2)
+{
+    // Constructor
+    m1 = member_1;
+    m2 = new T(member_2);
+
+    std::cout << "Constructor " << m1 << "/" << *m2 << std::endl;
+}
+
+template <class T>
+DynamicClass<T>::DynamicClass(const DynamicClass<T> &item)
+{
+    // Copy consturctor
+    m1 = item.m1;
+    m2 = new T;
+    *m2 = *item.m2;
+    std::cout << "Copy consturctor " << m1 << "/" << *m2 << std::endl;
+}
+
+template <class T>
+DynamicClass<T>::~DynamicClass()
+{
+    // Deconstructor
+    std::cout << "Deconstructor is called for " << m1 << "/" << *m2 << std::endl;
+    delete m2;
+}
+
+template <class T>
+DynamicClass<T> *DynamicClass<T>::getObjectPointer() const
+{
+    return this;
+}
+
+template <class T>
+void DynamicClass<T>::displayClass() const
+{
+    std::cout << "Object info\n " << m1 << "/" << *m2 << "\n"
+              << &m1 << "/" << m2 << std::endl;
+}
+
+template <class T>
+void _print(T value)
+{
+    //  _print<std::string>("test print");
+    std::cout << value << std::endl;
+}
 
 int main()
 {
+    DynamicClass<int> obj_1 = DynamicClass<int>(5, 500);
+    DynamicClass<int> obj_2 = obj_1;
+    DynamicClass<int> obj_3 = DynamicClass<int>(3, 300);
+    obj_3 = obj_2;
+
+    obj_1.displayClass();
+    obj_2.displayClass();
+    obj_3.displayClass();
+
     return 0;
 }
