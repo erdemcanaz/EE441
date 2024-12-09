@@ -61,6 +61,7 @@ void simple_test_2()
 
     double *p = new double(5.3);
 
+
     const int NUMBER_OF_PERSONS = 20;
     Person *persons = new Person[NUMBER_OF_PERSONS];
     for (uint8_t i = 0; i < NUMBER_OF_PERSONS; i++)
@@ -72,8 +73,9 @@ void simple_test_2()
     persons[0].printId();
     delete[] persons;
 }
+
+
 int main()
 {
-    simple_test_2();
     return 0;
 }
