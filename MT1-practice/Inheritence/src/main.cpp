@@ -41,12 +41,18 @@ private:
 public:
     Parent();
     Parent(std::string name, int age, int number_of_kids);
+    Parent(const Parent &other);
     ~Parent();
     void Info() const;
 };
 
 Parent::Parent() : Person(), m_number_of_kids(-1) {};
 Parent::Parent(std::string name, int age, int number_of_kids) : Person(name, age), m_number_of_kids(number_of_kids) {};
+Parent::Parent(const Parent &other) {
+
+};
+
+
 Parent::~Parent()
 {
     std::cout << "Parent deconstructor is called" << std::endl;
