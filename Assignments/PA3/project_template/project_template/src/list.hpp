@@ -43,7 +43,7 @@ public:
         m_size = 0;
     }
 
-    // COPY CONSTRUCTOR: Initialize this list as an empty list, then copy every node from `other`
+    // COPY CONSTRUCTOR: Initialize this list as an empty list, then copy every node from 'other'
     List(const List &other) : m_head(nullptr), m_tail(nullptr), m_size(0)
     {
         Node *temp = other.m_head;
@@ -54,16 +54,16 @@ public:
         }
     }
 
-    // MOVE CONSTRUCTOR: "Steals" the head, tail, and size from `other`, leaving `other` in an empty state.
+    // MOVE CONSTRUCTOR: "Steals" the head, tail, and size from 'other', leaving 'other' in an empty state.
     List(List &&other) : m_head(other.m_head), m_tail(other.m_tail), m_size(other.m_size)
     {
-        // Leave `other` in an empty (but destructible) state
+        // Leave 'other' in an empty (but destructible) state
         other.m_head = nullptr;
         other.m_tail = nullptr;
         other.m_size = 0;
     }
 
-    // COPY ASSIGNMENT: Deep-Copy every node from `other` to this list. ( Guard against self-assignment.)
+    // COPY ASSIGNMENT: Deep-Copy every node from 'other' to this list. ( Guard against self-assignment.)
     List &operator=(const List &other)
     {
         // Guard against self-assignment
@@ -82,7 +82,7 @@ public:
         m_tail = nullptr;
         m_size = 0;
 
-        // Then, copy from `other`
+        // Then, copy from 'other'
         Node *temp = other.m_head;
         while (temp != nullptr)
         {
@@ -98,7 +98,9 @@ public:
         if (this == &other)
             return *this; // self-assignment, do nothing
 
-        // SWAP-AND-ROLLBACK LOGIC -- swap pointers with `other`
+        // SWAP-AND-ROLLBACK LOGIC -- swap pointers with 'other' so that when 'other' eventually destructs, it will destroy the old data that used to belong to this object.
+        // When 'other' goes out of scope, it will destroy what used to be our old list (if any).
+
         // Swap m_head
         Node *tempHead = m_head;
         m_head = other.m_head;
@@ -113,9 +115,6 @@ public:
         size_t tempSize = m_size;
         m_size = other.m_size;
         other.m_size = tempSize;
-
-        // When `other` goes out of scope, it will destroy
-        // what used to be our old list (if any).
 
         return *this;
     }
