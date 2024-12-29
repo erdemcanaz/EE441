@@ -5,7 +5,7 @@ else
 	OUT_EXT ?=
 endif
 
-CXXFLAGS ?= -Wall -O0 -std=c++17 -g
+CXXFLAGS ?= -Wall -O3 -std=c++17
 
 CXX := g++
 
@@ -28,13 +28,13 @@ all: $(OUT)$(OUT_EXT)
 
 ./$(OUT)$(OUT_EXT): $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
-
+	
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -c $< -o $@
-
+	
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -c $< -o $@
-
+	
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
 
