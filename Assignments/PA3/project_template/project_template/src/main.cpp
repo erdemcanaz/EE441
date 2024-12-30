@@ -3,7 +3,9 @@
 #include <stdexcept>
 #include "sudoku.hpp"
 #include "memory.hpp"
+
 #include "list.hpp"
+#include "graph.hpp"
 
 /// Utility function to print a given list and its size
 template <typename T>
@@ -420,9 +422,6 @@ void testListFunctionality()
     std::cout << " All List Tests Passed Successfully!\n";
     std::cout << "=====================================\n\n";
 }
-
-// Include your graph header here
-#include "graph.hpp"
 
 /// Helper function to print the graph’s vertices, their colors, and neighbors.
 /// Uses the Graph::Vertex's __neighbor_count() / __neighbor_at() for demonstration.
