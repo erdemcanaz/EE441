@@ -374,12 +374,76 @@ int Graph::max_color() const
     return max_degree + 1;
 }
 
-bool Graph::color_helper(List<Vertex *>::Iterator vertex)
+// Private helper (recursive) function to color vertices of the graph.
+bool Graph::color_helper(List<Vertex *>::Iterator vertexIt)
 {
-    throw std::logic_error("Function \"Graph color_helper\" is not implemented!");
+    // (a) If the vertices are depleted, return true
+    if (vertexIt == m_vertices.end())
+        return true;
+
+    Vertex *v = *vertexIt; // Dereference the iterator to get the Vertex*
+
+    // (b) If this vertex is already colored, move on to the next one
+    if (v->color() != 0)
+    {
+        // Just recurse on the next vertex
+        ++vertexIt;
+        return color_helper(vertexIt);
+    }
+
+    // (c) If the vertex is not colored, we will try assigning possible colors
+    //     up to max_color() (you can change the logic if you prefer fewer colors).
+    int maxC = max_color(); // e.g., could be # of vertices or some other bound
+    for (int c = 1; c <= maxC; ++c)
+    {
+        // Check if color 'c' is valid (i.e., no neighbor has that color)
+        bool canUseThisColor = true;
+        for (auto nbIt = v->m_neighbors.begin(); nbIt != v->m_neighbors.end(); ++nbIt)
+        {
+            if ((*nbIt)->color() == c)
+            {
+                canUseThisColor = false;
+                break;
+            }
+        }
+
+        if (canUseThisColor)
+        {
+            // Temporarily color this vertex
+            v->color(c);
+
+            // Recurse on the next vertex
+            List<Vertex *>::Iterator nextIt = vertexIt;
+            ++nextIt;
+            if (color_helper(nextIt))
+                return true;
+
+            // (d) Backtrack: reset the color if it didn't lead to a solution
+            v->color(0);
+        }
+    }
+
+    // If no color assignment worked, return false
+    return false;
 }
 
+/**
+ * Public function to color the entire graph.
+ * For disconnected graphs, we attempt coloring from each vertex to ensure
+ * that each connected component is colored.
+ */
 bool Graph::color()
 {
-    throw std::logic_error("Function \"Graph color\" is not implemented!");
+    // Call color_helper for each vertex in the graph.
+    // If any vertex fails to color properly (returns false),
+    // the entire coloring process fails.
+    for (auto it = m_vertices.begin(); it != m_vertices.end(); ++it)
+    {
+        // If color_helper cannot complete coloring starting from this vertex, return false
+        if (!color_helper(it))
+            return false;
+    }
+
+    // If we never failed, we have a consistent coloring
+    return true;
 }
