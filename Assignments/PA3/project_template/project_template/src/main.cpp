@@ -5,6 +5,7 @@
 #include "list.hpp"
 #include <stdexcept>
 
+
 void testListFunctionality()
 {
     std::cout << "Starting List Tests...\n";
@@ -516,8 +517,18 @@ void testGraphFunctionality()
 
 void play(const char *filename)
 {
+    std::cout << "AAA:" << std::endl;
     Sudoku sudoku;
-    sudoku.set_clues(filename);
+    try
+    {
+        sudoku.set_clues(filename);
+        std::cout << "Initial board:" << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    sudoku.print();
     if (sudoku.solve())
     {
         sudoku.print();
@@ -532,18 +543,6 @@ void play(const char *filename)
 bool isTest = true;
 int main()
 {
-    if (isTest)
-    {
-        testListFunctionality();
-        testGraphFunctionality();
-    }
-    else
-    {
-        std::cout << "Sudoku 1:" << std::endl;
-        play("data/s1.txt");
-        std::cout << "Sudoku 2:" << std::endl;
-        play("data/s2.txt");
-        std::cout << "Sudoku 3:" << std::endl;
-        play("data/s3.txt"); // No solution
-    }
+    testListFunctionality();
+    testGraphFunctionality();
 }
