@@ -16,7 +16,6 @@ void printList(const List<T> &list, const std::string &prefix = "")
     }
     std::cout << std::endl;
 }
-
 void testListFunctionality()
 {
     std::cout << "\n===============================\n";
@@ -425,62 +424,113 @@ void testListFunctionality()
 // Include your graph header here
 #include "graph.hpp"
 
+/// Helper function to print the graph’s vertices, their colors, and neighbors.
+/// Uses the Graph::Vertex's __neighbor_count() / __neighbor_at() for demonstration.
+static void printGraph(const Graph &g, const std::string &prefix = "")
+{
+
+    size_t numVertices = g.__size(); // or your own approach if .size() doesn't exist
+    std::cout << prefix << "Graph has " << numVertices << " vertices:\n";
+    for (size_t i = 0; i < numVertices; ++i)
+    {
+        Graph temp = g; // Copy the graph to avoid modifying the original
+        // Attempt to get the Vertex pointer. We'll wrap it in a try block
+        // in case operator[](i) throws std::domain_error for invalid ID.
+        try
+        {
+            auto v = temp[i];
+            std::cout << prefix << "  Vertex " << i
+                      << " (color=" << v->color() << "): [ neighbors: ";
+            for (size_t n = 0; n < v->__neighbor_count(); ++n)
+            {
+                std::cout << v->__neighbor_at(n)->id();
+                if (n + 1 < v->__neighbor_count())
+                    std::cout << ", ";
+            }
+            std::cout << " ]\n";
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << prefix << "  (Could not access vertex " << i
+                      << " => " << e.what() << ")\n";
+        }
+    }
+    std::cout << std::endl;
+}
+
 void testGraphFunctionality()
 {
     using namespace std;
 
-    cout << "Starting Graph tests..." << endl;
+    cout << "\n=====================================\n";
+    cout << "   Starting Graph tests...\n";
+    cout << "=====================================\n\n";
 
-    // 1) Test add_vertex (IDs should start from 1, but the provided code uses size() as ID which starts from 0).
-    //    Adjust the following tests depending on how you've finally implemented 'add_vertex'.
+    // (1) Test add_vertex
     {
+        cout << "[1] Testing add_vertex...\n";
+
         Graph g;
+        cout << "  - Creating a new Graph and adding 3 vertices...\n";
         size_t id1 = g.add_vertex();
         size_t id2 = g.add_vertex();
         size_t id3 = g.add_vertex();
+        cout << "  - Expecting IDs: 0, 1, 2 (based on given code). Got: "
+             << id1 << ", " << id2 << ", " << id3 << "\n";
 
-        // Expect IDs: 0, 1, 2 (given the posted code)
-        // or 1, 2, 3 (if you adjusted to requirement #5).
         assert(id1 == 0);
         assert(id2 == 1);
         assert(id3 == 2);
 
-        // 2) Test operator[](size_t id): check we can retrieve the correct vertex pointer
+        printGraph(g, "    ");
+        cout << "  => add_vertex test OK\n\n";
+
+        cout << "[2] Testing operator[](size_t)...\n";
         Graph::Vertex *v1 = g[id1];
         Graph::Vertex *v2 = g[id2];
         Graph::Vertex *v3 = g[id3];
+        cout << "  - Checking ID retrieval: v1->id()=" << v1->id()
+             << ", v2->id()=" << v2->id() << ", v3->id()=" << v3->id() << "\n";
         assert(v1->id() == id1);
         assert(v2->id() == id2);
         assert(v3->id() == id3);
 
-        // Negative test: Ensure we throw std::domain_error if vertex does not exist
+        // Negative test for invalid IDs
+        cout << "  - Testing operator[] with invalid ID (should throw domain_error)...\n";
         bool exceptionCaught = false;
         try
         {
-            g[999]; // This should throw
+            g[999]; // invalid
         }
         catch (const domain_error &)
         {
+            cout << "    Caught expected domain_error for invalid ID.\n";
             exceptionCaught = true;
         }
         assert(exceptionCaught && "Accessing invalid vertex ID did not throw domain_error");
 
-        // 3) Test connect(size_t id1, size_t id2)
+        cout << "  => operator[](size_t) test OK\n\n";
+
+        cout << "[3] Testing connect(size_t, size_t)...\n";
         g.connect(id1, id2);
-        // For an undirected graph, v1 should have v2 as neighbor and v2 should have v1
+        cout << "  - Connected vertex " << id1 << " and " << id2 << ".\n";
+        printGraph(g, "    ");
+
+        // For undirected graph, v1 <-> v2
         assert(v1->__neighbor_count() == 1);
         assert(v2->__neighbor_count() == 1);
         assert(v1->__neighbor_at(0) == v2);
         assert(v2->__neighbor_at(0) == v1);
 
-        // Another connection
+        cout << "  - Connecting vertex " << id2 << " and " << id3 << "...\n";
         g.connect(id2, id3);
-        // Now v2 should have both v1 and v3
+        printGraph(g, "    ");
+        // v2 should have v1 and v3; v3 should have v2
         assert(v2->__neighbor_count() == 2);
-        // v3 should have v2 as neighbor
         assert(v3->__neighbor_count() == 1);
 
         // Negative test: connecting a vertex to itself
+        cout << "  - Trying to connect a vertex to itself...\n";
         exceptionCaught = false;
         try
         {
@@ -488,11 +538,13 @@ void testGraphFunctionality()
         }
         catch (const invalid_argument &)
         {
+            cout << "    Caught expected invalid_argument for self-connection.\n";
             exceptionCaught = true;
         }
         assert(exceptionCaught && "Connecting vertex to itself did not throw invalid_argument");
 
-        // Negative test: connecting two non-existent vertices
+        // Negative test: connecting invalid IDs
+        cout << "  - Trying to connect invalid IDs (100, 200)...\n";
         exceptionCaught = false;
         try
         {
@@ -500,164 +552,190 @@ void testGraphFunctionality()
         }
         catch (const domain_error &)
         {
+            cout << "    Caught expected domain_error for invalid IDs.\n";
             exceptionCaught = true;
         }
         assert(exceptionCaught && "Connecting invalid IDs did not throw domain_error");
 
-        // 4) Test Vertex::color(int color) for a single vertex (requirement #1)
-        //    color(0) should always succeed (reset color)
-        assert(v1->color() == 0); // default
+        cout << "  => connect test OK\n\n";
+
+        cout << "[4] Testing Vertex::color(int)...\n";
+        cout << "  - Initially, v1->color() = " << v1->color() << " (expected 0)\n";
+        assert(v1->color() == 0);
+
+        // Try coloring v1 with color=2
+        cout << "  - Coloring v1 with color=2...\n";
         bool colored = v1->color(2);
+        printGraph(g, "    ");
         assert(colored && v1->color() == 2);
-        // Now v1 has color=2; if v2 tries to color with color=2, it should fail
+
+        // v2 coloring with color=2 should fail because its neighbor v1 is color=2
+        cout << "  - Attempting to color v2 with color=2...\n";
         colored = v2->color(2);
-        assert(!colored && "Neighbor already has color=2, so v2->color(2) should fail");
-        // But color(3) should succeed
+        printGraph(g, "    ");
+        assert(!colored && "v2->color(2) should fail since v1 is already 2");
+
+        // But coloring with color=3 should succeed
+        cout << "  - Coloring v2 with color=3...\n";
         colored = v2->color(3);
+        printGraph(g, "    ");
         assert(colored && v2->color() == 3);
 
-        // 5) Test Vertex::add_neighbor (already tested via Graph::connect, but let's do direct test)
-        //    We expect that add_neighbor is idempotent (adding same neighbor again does nothing).
-        v1->add_neighbor(v2);
-        // Should still have exactly one neighbor
-        assert(v1->__neighbor_count() == 1 && "add_neighbor repeated the same neighbor incorrectly");
+        cout << "  => Vertex::color(int) test OK\n\n";
 
-        // 6) Test Vertex::remove_neighbor
-        //    Remove v3 from v2's neighbor list.
-        //    Before removal, v2's neighbor list has v1 and v3
+        cout << "[5] Testing Vertex::add_neighbor(...) (idempotency check)...\n";
+        size_t neighborCountBefore = v1->__neighbor_count();
+        cout << "  - v1 has " << neighborCountBefore << " neighbor(s). Adding v2 again...\n";
+        v1->add_neighbor(v2);
+        size_t neighborCountAfter = v1->__neighbor_count();
+        cout << "  - v1 now has " << neighborCountAfter << " neighbor(s).\n";
+        assert(neighborCountBefore == neighborCountAfter && "add_neighbor repeated the same neighbor incorrectly");
+        cout << "  => add_neighbor test OK\n\n";
+
+        cout << "[6] Testing Vertex::remove_neighbor(...)\n";
+        // v2 currently has neighbors { v1, v3 }. We'll remove v3:
+        cout << "  - Removing v3 from v2’s neighbor list...\n";
         assert(v2->__neighbor_count() == 2);
         v2->remove_neighbor(v3);
+        printGraph(g, "    ");
+
         // Now v2 has only v1
         assert(v2->__neighbor_count() == 1);
-        // Also v3 should no longer have v2
+        // v3 should no longer have v2
         assert(v3->__neighbor_count() == 0);
 
-        // 7) Test max_color()
-        //    The highest degree is with v2 (which has v1 as neighbor, degree=1).
-        //    Actually, v2 used to have degree=2, but we removed v3 from its list, so now max_degree is 1
-        //    So max_color() == max_degree + 1 == 2
-        int mc = g.max_color();
-        assert(mc == 2 && "max_color() should return (max_degree + 1) = 2");
+        cout << "  => remove_neighbor test OK\n\n";
 
-        // 8) Test the full graph coloring (recursive)
-        //    Let's reconnect v2 <-> v3 for a small chain: v1 -- v2 -- v3
+        cout << "[7] Testing max_color()...\n";
+        int mc = g.max_color();
+        cout << "  - g.max_color() returned: " << mc
+             << " (expected max_degree+1). Current max_degree=1 => max_color=2\n";
+        assert(mc == 2);
+
+        cout << "  => max_color test OK\n\n";
+
+        cout << "[8] Testing full recursive coloring...\n";
+        cout << "  - Reconnecting v2 <-> v3 to form a chain v1--v2--v3\n";
         g.connect(id2, id3);
-        // Clear existing colors
+        // Reset colors
         v1->color(0);
         v2->color(0);
         v3->color(0);
-        bool isColored = g.color();
+        printGraph(g, "    ");
+
+        bool isColored = g.color(); // the full graph coloring
+        cout << "  - Called g.color() => " << (isColored ? "success" : "failure") << "\n";
+        printGraph(g, "    ");
         assert(isColored && "Graph coloring failed on a simple chain");
-        // After a successful 2-coloring, we expect something like v1=1, v2=2, v3=1 or similar.
-        // Let's just ensure none of them is 0
+        // Ensure none ended up with color 0
         assert(v1->color() != 0);
         assert(v2->color() != 0);
         assert(v3->color() != 0);
+
+        cout << "  => recursive coloring test OK\n\n";
     }
 
-    // 9) Test copy constructor / copy assignment
+    cout << "[9] Testing copy constructor / copy assignment...\n";
     {
         Graph g1;
         size_t a = g1.add_vertex();
         size_t b = g1.add_vertex();
         g1.connect(a, b);
-        // color them:
+
+        // Color them
         g1[a]->color(1);
         g1[b]->color(2);
 
-        // Copy constructor
+        cout << "  - Original g1:\n";
+        printGraph(g1, "    ");
+
+        cout << "  - Copy constructing g2 from g1...\n";
         Graph g2(g1);
-        // They should have distinct Vertex* pointers, but same IDs and colors
+        printGraph(g2, "    ");
+
+        // They should have distinct Vertex pointers, same ID and color
         assert(g2[a] != g1[a]);
         assert(g2[b] != g1[b]);
         assert(g2[a]->id() == a && g2[b]->id() == b);
         assert(g2[a]->color() == 1 && g2[b]->color() == 2);
 
-        // Copy assignment
+        cout << "  - Copy assigning g3 from g1...\n";
         Graph g3;
-        g3 = g1; // operator=
+        g3 = g1;
+        printGraph(g3, "    ");
         assert(g3[a] != g1[a]);
         assert(g3[b] != g1[b]);
         assert(g3[a]->id() == a && g3[b]->id() == b);
         assert(g3[a]->color() == 1 && g3[b]->color() == 2);
+
+        cout << "  => copy constructor / assignment tests OK\n\n";
     }
 
-    // 10) Test move constructor / move assignment
+    cout << "[10] Testing move constructor / move assignment...\n";
     {
         Graph g1;
         size_t a = g1.add_vertex();
         size_t b = g1.add_vertex();
         g1.connect(a, b);
 
-        // Move constructor
+        cout << "  - Move constructing g2 from g1...\n";
         Graph g2(std::move(g1));
-        // g1 should no longer have vertices; g2 took them.
+        cout << "  - After std::move, g1 should have no vertices.\n";
+
         bool exceptionCaught = false;
         try
         {
-            // This should fail because g1 should not have any vertices after the move
+            // g1[a] should fail
             g1[a];
         }
-        catch (const std::domain_error &)
+        catch (const domain_error &)
         {
+            cout << "    Caught expected domain_error (g1 is empty after move).\n";
             exceptionCaught = true;
         }
         assert(exceptionCaught && "After move, g1 should not contain any vertices.");
+        cout << "  - g2 now has them:\n";
+        printGraph(g2, "    ");
 
         // Check that g2 has them
         assert(g2[a]->id() == a);
         assert(g2[b]->id() == b);
 
-        // Move assignment
+        cout << "  - Move assigning g3 = std::move(g2)...\n";
         Graph g3;
         g3 = std::move(g2);
-        // Now g2 has no vertices, while g3 has them
+        printGraph(g3, "    ");
+
         exceptionCaught = false;
         try
         {
+            // g2[a] should fail
             g2[a];
         }
-        catch (const std::domain_error &)
+        catch (const domain_error &)
         {
+            cout << "    Caught expected domain_error (g2 is empty after move).\n";
             exceptionCaught = true;
         }
         assert(exceptionCaught && "After move assignment, g2 should not contain any vertices.");
+
         // g3 has them
         assert(g3[a]->id() == a);
         assert(g3[b]->id() == b);
+
+        cout << "  => move constructor / assignment tests OK\n\n";
     }
 
-    cout << "All Graph tests passed successfully!" << endl;
+    cout << "==============================================\n";
+    cout << " All Graph tests passed successfully!\n";
+    cout << "==============================================\n\n";
 }
 
-void play(const char *filename)
-{
-    std::cout << "AAA:" << std::endl;
-    Sudoku sudoku;
-    try
-    {
-        sudoku.set_clues(filename);
-        std::cout << "Initial board:" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-    sudoku.print();
-    if (sudoku.solve())
-    {
-        sudoku.print();
-    }
-    else
-    {
-        std::cout << "No solution available!\n"
-                  << std::endl;
-    }
-}
-
-bool isTest = true;
 int main()
 {
+    // I could not implement the sudoku class. I am sorry for that. I will stick with the directive:
+    // DIRECTIVE ->'If your implementation is incomplete, modify the main function so that it can demonstrate all the features you have implemented.'
+    // I have added some testing functions to acces private members of the classes. They are not used in any of the usefull functions.
     testListFunctionality();
     testGraphFunctionality();
 }

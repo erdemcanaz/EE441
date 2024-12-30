@@ -17,13 +17,13 @@ public:
         friend class Graph;
 
     public:
-        //  Return how many neighbors this vertex has
+        //  Return how many neighbors this vertex has. added for testing
         size_t __neighbor_count() const
         {
             return m_neighbors.size();
         }
 
-        //  Check if 'other' is a neighbor
+        //  Check if 'other' is a neighbor. added for testing
         bool __has_neighbor(const Vertex *other) const
         {
             for (auto it = m_neighbors.begin(); it != m_neighbors.end(); ++it)
@@ -74,6 +74,9 @@ public:
     void connect(size_t id1, size_t id2);
 
     virtual int max_color() const;
+
+    //  Return the number of vertices in the graph. added for testing
+    int __size() const;
 
 private:
     bool color_helper(List<Vertex *>::Iterator vertex);

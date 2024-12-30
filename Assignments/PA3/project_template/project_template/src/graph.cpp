@@ -447,3 +447,9 @@ bool Graph::color()
     // If we never failed, we have a consistent coloring
     return true;
 }
+
+// Return the number of vertices in the graph
+int Graph::__size() const
+{
+    return m_vertices.size();
+}
