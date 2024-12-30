@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cassert>
+#include <stdexcept>
 #include "sudoku.hpp"
 #include "memory.hpp"
 #include "list.hpp"
-#include <stdexcept>
 
 /// Utility function to print a given list and its size
 template <typename T>
