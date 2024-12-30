@@ -1,7 +1,7 @@
 #include "graph.hpp"
 #include "memory.hpp"
 
-Graph::Vertex::Vertex(size_t id) : m_id(id), m_color(0) { }
+Graph::Vertex::Vertex(size_t id) : m_id(id), m_color(0) {}
 
 size_t Graph::Vertex::id() const
 {
@@ -15,20 +15,57 @@ int Graph::Vertex::color() const
 
 bool Graph::Vertex::color(int color)
 {
-    throw std::logic_error("Function \"Graph Vertex color\" is not implemented!");
+    // If the input color is zero, always allow the update
+    if (color == 0)
+    {
+        m_color = color;
+        return true;
+    }
+
+    // Use the iterator to traverse through neighbors
+    for (List<Vertex *>::Iterator it = m_neighbors.begin(); it != m_neighbors.end(); ++it)
+    {
+        if ((*it)->m_color == color)
+        {
+            return false; // Conflict found, cannot update color
+        }
+    }
+
+    // No conflicts, update the color
+    m_color = color;
+    return true;
 }
 
-void Graph::Vertex::add_neighbor(Vertex* other)
+void Graph::Vertex::add_neighbor(Vertex *other)
 {
-    throw std::logic_error("Function \"Graph Vertex add_neighbor\" is not implemented!");
+    // Do nothing if the input is nullptr
+    if (!other)
+    {
+        return;
+    }
+
+    // Check if the vertex is already a neighbor using an iterator
+    for (List<Vertex *>::Iterator it = m_neighbors.begin(); it != m_neighbors.end(); ++it)
+    {
+        if (*it == other)
+        {
+            return; // Already a neighbor, do nothing
+        }
+    }
+
+    // Add the vertex to the neighbor list
+    m_neighbors.push_back(other);
+
+    // Add this vertex to the other vertex's neighbor list
+    other->m_neighbors.push_back(this);
 }
 
-void Graph::Vertex::remove_neighbor(Vertex* other)
+void Graph::Vertex::remove_neighbor(Vertex *other)
 {
     throw std::logic_error("Function \"Graph Vertex remove_neighbor\" is not implemented!");
 }
 
-Graph::Graph() { }
+Graph::Graph() {}
 
 Graph::~Graph()
 {
@@ -60,7 +97,7 @@ size_t Graph::add_vertex()
     throw std::logic_error("Function \"Graph add_vertex\" is not implemented!");
 }
 
-Graph::Vertex* Graph::operator[](size_t id)
+Graph::Vertex *Graph::operator[](size_t id)
 {
     throw std::logic_error("Function \"Graph operator[]\" is not implemented!");
 }
@@ -75,7 +112,7 @@ int Graph::max_color() const
     throw std::logic_error("Function \"Graph max_color\" is not implemented!");
 }
 
-bool Graph::color_helper(List<Vertex*>::Iterator vertex)
+bool Graph::color_helper(List<Vertex *>::Iterator vertex)
 {
     throw std::logic_error("Function \"Graph color_helper\" is not implemented!");
 }
