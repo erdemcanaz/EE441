@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include "memory.hpp"
+#include <iostream>
 
 template <class T>
 class List
@@ -98,23 +99,27 @@ public:
         if (this == &other)
             return *this; // self-assignment, do nothing
 
-        // SWAP-AND-ROLLBACK LOGIC -- swap pointers with 'other' so that when 'other' eventually destructs, it will destroy the old data that used to belong to this object.
-        // When 'other' goes out of scope, it will destroy what used to be our old list (if any).
+        // 1. Clean up any existing nodes in *this
+        Node *current = m_head;
+        while (current)
+        {
+            Node *next = current->m_next;
+            delete current;
+            current = next;
+        }
+        m_head = nullptr;
+        m_tail = nullptr;
+        m_size = 0;
 
-        // Swap m_head
-        Node *tempHead = m_head;
+        // 2. Steal the data from 'other'
         m_head = other.m_head;
-        other.m_head = tempHead;
-
-        // Swap m_tail
-        Node *tempTail = m_tail;
         m_tail = other.m_tail;
-        other.m_tail = tempTail;
-
-        // Swap m_size
-        size_t tempSize = m_size;
         m_size = other.m_size;
-        other.m_size = tempSize;
+
+        // 3. Leave 'other' in an empty state
+        other.m_head = nullptr;
+        other.m_tail = nullptr;
+        other.m_size = 0;
 
         return *this;
     }
