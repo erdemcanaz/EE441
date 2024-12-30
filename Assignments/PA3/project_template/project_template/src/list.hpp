@@ -245,42 +245,59 @@ public:
     {
     private:
         Node *m_node;
-
+        // Constructor is private so only List can create Iterators
         Iterator(Node *node) : m_node(node) {}
-
         friend class List;
 
     public:
+        // Compare if two iterators point to the same node
         bool operator==(Iterator other) const
         {
-            throw std::logic_error("Function \"List Iterator operator==\" is not implemented!");
+            return m_node == other.m_node;
         }
 
+        // Compare if two iterators point to different nodes
         bool operator!=(Iterator other) const
         {
-            throw std::logic_error("Function \"List Iterator operator!=\" is not implemented!");
+            return m_node != other.m_node;
         }
 
+        // Dereference operator: returns a reference to the data stored in the node
         T &operator*()
         {
-            throw std::logic_error("Function \"List Iterator operator*\" is not implemented!");
+            if (!m_node)
+            {
+                throw std::runtime_error("Dereferencing end() iterator or nullptr");
+            }
+            return m_node->m_data;
         }
 
+        // Return an iterator to the *next* element (without changing the current iterator)
         Iterator next()
         {
-            throw std::logic_error("Function \"List Iterator next\" is not implemented!");
+            if (m_node)
+            {
+                return Iterator(m_node->m_next);
+            }
+            return Iterator(nullptr);
         }
 
-        // prefix increment
+        // Prefix increment: ++it
         Iterator operator++()
         {
-            throw std::logic_error("Function \"List Iterator prefix increment\" is not implemented!");
+            if (m_node)
+            {
+                m_node = m_node->m_next;
+            }
+            return *this;
         }
 
-        // postfix increment
+        // Postfix increment: it++
         Iterator operator++(int)
         {
-            throw std::logic_error("Function \"List Iterator postfix increment\" is not implemented!");
+            Iterator temp = *this;
+            ++(*this); // reuse prefix
+            return temp;
         }
     };
 
@@ -288,42 +305,56 @@ public:
     {
     private:
         const Node *m_node;
-
+        // Constructor is private so only List can create ConstIterators
         ConstIterator(const Node *node) : m_node(node) {}
-
         friend class List;
 
     public:
         bool operator==(ConstIterator other) const
         {
-            throw std::logic_error("Function \"List ConstIterator operator==\" is not implemented!");
+            return m_node == other.m_node;
         }
 
         bool operator!=(ConstIterator other) const
         {
-            throw std::logic_error("Function \"List ConstIterator operator!=\" is not implemented!");
+            return m_node != other.m_node;
         }
 
+        // Dereference operator (const): returns a const reference to the data
         const T &operator*() const
         {
-            throw std::logic_error("Function \"List ConstIterator operator*\" is not implemented!");
+            if (!m_node)
+            {
+                throw std::runtime_error("Dereferencing end() const iterator or nullptr");
+            }
+            return m_node->m_data;
         }
 
         ConstIterator next()
         {
-            throw std::logic_error("Function \"List ConstIterator next\" is not implemented!");
+            if (m_node)
+            {
+                return ConstIterator(m_node->m_next);
+            }
+            return ConstIterator(nullptr);
         }
 
-        // prefix increment
+        // prefix increment: ++it
         ConstIterator operator++()
         {
-            throw std::logic_error("Function \"List ConstIterator prefix increment\" is not implemented!");
+            if (m_node)
+            {
+                m_node = m_node->m_next;
+            }
+            return *this;
         }
 
-        // postfix increment
+        // postfix increment: it++
         ConstIterator operator++(int)
         {
-            throw std::logic_error("Function \"List ConstIterator postfix increment\" is not implemented!");
+            ConstIterator temp = *this;
+            ++(*this); // reuse prefix
+            return temp;
         }
     };
 
@@ -349,11 +380,88 @@ public:
 
     Iterator insert(Iterator iter, T data)
     {
-        throw std::logic_error("Function \"List insert\" is not implemented!");
+        /*
+            insert:
+            Inserts a new node before the node pointed to by 'iter'.
+            If 'iter' == begin(), it's equivalent to push_front.
+            If 'iter' == end(),   it's equivalent to push_back.
+        */
+
+        // Special case: if the iterator is end() => push_back
+        if (iter.m_node == nullptr)
+        {
+            push_back(data);
+            // The new tail node is the inserted node
+            return Iterator(m_tail);
+        }
+
+        // Special case: if iter == begin() => push_front
+        if (iter.m_node == m_head)
+        {
+            push_front(data);
+            // The new head node is the inserted node
+            return Iterator(m_head);
+        }
+
+        // Otherwise, we need to insert before iter.m_node
+        Node *current = iter.m_node;
+        Node *prevNode = current->m_prev;
+
+        Node *newNode = new Node(data);
+        hook(prevNode, newNode);
+        hook(newNode, current);
+
+        ++m_size;
+        return Iterator(newNode);
     }
 
     Iterator remove(Iterator iter)
     {
-        throw std::logic_error("Function \"List remove\" is not implemented!");
+        /*
+            remove:
+            Removes the node at 'iter'. Returns an iterator to the element after the one removed.
+            - If the list is empty or iter is end(), we throw an exception.
+            - If removing the head or tail, update pointers accordingly.
+        */
+        if (m_size == 0)
+            throw std::logic_error("Cannot remove from an empty list");
+
+        if (iter.m_node == nullptr)
+            throw std::logic_error("Cannot remove end() iterator");
+
+        Node *nodeToRemove = iter.m_node;
+        Node *prevNode = nodeToRemove->m_prev;
+        Node *nextNode = nodeToRemove->m_next;
+
+        // If removing the head
+        if (nodeToRemove == m_head)
+        {
+            m_head = nodeToRemove->m_next;
+            if (m_head)
+                m_head->m_prev = nullptr;
+        }
+        else
+        {
+            prevNode->m_next = nextNode;
+        }
+
+        // If removing the tail
+        if (nodeToRemove == m_tail)
+        {
+            m_tail = nodeToRemove->m_prev;
+            if (m_tail)
+                m_tail->m_next = nullptr;
+        }
+        else
+        {
+            if (nextNode)
+                nextNode->m_prev = prevNode;
+        }
+
+        delete nodeToRemove;
+        --m_size;
+
+        // Return iterator pointing to the next node in the list (which might be nullptr if we removed the last element)
+        return Iterator(nextNode);
     }
 };
