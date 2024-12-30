@@ -302,17 +302,76 @@ size_t Graph::add_vertex()
 
 Graph::Vertex *Graph::operator[](size_t id)
 {
-    throw std::logic_error("Function \"Graph operator[]\" is not implemented!");
+    // Iterate through m_vertices to find the vertex with the given ID
+    for (List<Vertex *>::Iterator it = m_vertices.begin(); it != m_vertices.end(); ++it)
+    {
+        if ((*it)->id() == id)
+        {
+            return *it;
+        }
+    }
+    throw std::domain_error("Vertex with the given ID does not exist");
 }
 
 void Graph::connect(size_t id1, size_t id2)
 {
-    throw std::logic_error("Function \"Graph connect\" is not implemented!");
+    // Check if the IDs are the same
+    if (id1 == id2)
+    {
+        throw std::invalid_argument("Cannot connect a vertex to itself");
+    }
+
+    // Find the vertices with the given IDs, assumes IDs are unique
+    Vertex *v1 = nullptr;
+    Vertex *v2 = nullptr;
+
+    for (List<Vertex *>::Iterator it = m_vertices.begin(); it != m_vertices.end(); ++it)
+    {
+        if ((*it)->id() == id1)
+        {
+            v1 = *it;
+        }
+        if ((*it)->id() == id2)
+        {
+            v2 = *it;
+        }
+    }
+
+    // Check if the vertices were found
+    if (v1 == nullptr || v2 == nullptr)
+    {
+        throw std::domain_error("One or both vertices do not exist with the given ID(s)");
+    }
+
+    // Add each vertex as a neighbor of the other, call only for one vertex since it is also added to other's neighbors within the function
+    v1->add_neighbor(v2);
 }
 
 int Graph::max_color() const
 {
-    throw std::logic_error("Function \"Graph max_color\" is not implemented!");
+    // Implement the function Graph::max_color which gives the maximum possible color. Please note that this value is equal to the maximum degree in the graph plus one.
+
+    // Initialize the maximum degree to zero
+    int max_degree = 0;
+
+    // Iterate through all vertices in the graph
+    for (auto it = m_vertices.begin(); it != m_vertices.end(); ++it)
+    {
+        // Get the current vertex
+        Vertex *v = *it;
+
+        // Get the number of neighbors of the current vertex
+        int degree = v->m_neighbors.size();
+
+        // Update the maximum degree if the current vertex has a higher degree
+        if (degree > max_degree)
+        {
+            max_degree = degree;
+        }
+    }
+
+    // Return the maximum degree plus one
+    return max_degree + 1;
 }
 
 bool Graph::color_helper(List<Vertex *>::Iterator vertex)
