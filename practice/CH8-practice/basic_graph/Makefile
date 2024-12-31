@@ -5,7 +5,7 @@ else
 	OUT_EXT ?=
 endif
 
-CXXFLAGS ?= -Wall -O3 -std=c++17
+CXXFLAGS ?= -w -O3 -std=c++17
 
 CXX := g++
 
