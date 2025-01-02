@@ -8,7 +8,7 @@ class Graph
 {
     // Edge weights are integer values
     // Weight of 0 indicates vertices are not connected
-    // vertices has integer IDs. Thus we can addres them with integer numbers.
+    // vertices has integer IDs. Thus we can addres them with integer numbers starting from 0
 private:
     int id;                 // ID of the graph object. For debugging purposes
     int num_vertex;         // Number of vertices of the graph. (i.e nodes)
@@ -24,7 +24,7 @@ public:
     ~Graph();                            // Destructor
     int n() const;                       // Returns number of vertices (i.e num_vertex)
     int e() const;                       // Returns number of edges (i.e. num_edge)
-    int first(int v) const;              // Returns the first neighbor of vertex v
+    int first(int v) const;              // Returns the first neighbor of vertex v, if no neighbour is found returns -1
     int next(int v, int p_v) const;      // Returns the next neighbor of vertex v after vertex p_v
     void setEdge(int v1, int v2, int w); // Connect vertices v1 & v2 with weight w
     void delEdge(int v1, int v2);        // Disconnect v1 and v2

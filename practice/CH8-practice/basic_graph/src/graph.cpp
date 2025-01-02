@@ -97,6 +97,34 @@ Graph::~Graph()
     std::cout << "Destructor is called for graph (" << id << ")" << std::endl;
 }
 
+int Graph::first(int v) const
+{
+    for (size_t i = 0; i < num_vertex; i++)
+    {
+        if (adjacency_matrix[v][i] != 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int Graph::next(int v, int p_v) const
+{
+    for (size_t i = p_v + 1; i < num_vertex; i++)
+    {
+        if (adjacency_matrix[v][i] != 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void Graph::setEdge(int v1, int v2, int w){
+    adjacency_matrix[v1][v2] = w;
+    adjacency_matrix[v2][v1] = w;
+}
 void Graph::printAdjacencyMatrix() const
 {
     std::cout << "\n\nPrinting Graph (" << id << ")" << std::endl;
